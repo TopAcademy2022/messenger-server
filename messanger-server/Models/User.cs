@@ -1,4 +1,5 @@
-﻿namespace messanger_server.Models
+﻿// Add documentation
+namespace messanger_server.Models
 {
     public class User
     {

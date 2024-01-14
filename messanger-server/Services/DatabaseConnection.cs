@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using messanger_server.Models;
 
+// Add documentation
 namespace messanger_server.Services
 {
     public class DatabaseConnection : DbContext

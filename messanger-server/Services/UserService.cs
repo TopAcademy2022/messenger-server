@@ -10,7 +10,6 @@ namespace messanger_server.Services
         {
             try
             {
-                // Replace
                 DatabaseConnection dbConnection = new DatabaseConnection();
 
                 // Replace

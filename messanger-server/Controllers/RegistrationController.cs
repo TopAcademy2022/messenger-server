@@ -30,8 +30,12 @@ namespace messanger_server.Controllers
                 this._userServise.CheckCorrectPassword(password) &&
                 this._userServise.CheckCorrectEmail(email))
             {
-                this._userServise.AddUser(new Models.User() { Login = login, Password = password, Email = email});
-                return SUCCESS;
+                if (this._userServise.AddUser(new Models.User() { Login = login, Password = password, Email = email }))
+                {
+                    return SUCCESS;
+                }
+
+                return FAILED;
             }
 
             return FAILED;

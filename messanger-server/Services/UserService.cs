@@ -1,4 +1,4 @@
-﻿using messanger_server.Models;
+using messanger_server.Models;
 using messanger_server.Services.Interfaces;
 
 // Add documentation
@@ -6,12 +6,13 @@ namespace messanger_server.Services
 {
     public class UserService : IUserServise
     {
+
         public bool AddUser(User user)
         {
             try
             {
                 // Replace
-                DatabaseConnection dbConnection = new DatabaseConnection();
+                DatabaseConnection dbConnection = new();
 
                 // Replace
                 if (!dbConnection.Users.Contains(user))
@@ -46,6 +47,18 @@ namespace messanger_server.Services
         public bool CheckCorrectEmail(string email)
         {
             return true;
+        }
+
+        public bool LoginAttempt(string login, string password)
+        {
+            DatabaseConnection dbConnection = new();
+
+                if (dbConnection.Users.Find(login, password) != null)
+                {
+                    return true;
+                }
+
+            return false;
         }
     }
 }

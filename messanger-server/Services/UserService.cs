@@ -12,7 +12,7 @@ namespace messanger_server.Services
             try
             {
                 // Replace
-                DatabaseConnection dbConnection = new();
+                DatabaseConnection dbConnection = new DatabaseConnection();
 
                 // Replace
                 if (!dbConnection.Users.Contains(user))
@@ -51,7 +51,7 @@ namespace messanger_server.Services
 
         public bool LoginAttempt(string login, string password)
         {
-            DatabaseConnection dbConnection = new();
+            DatabaseConnection dbConnection = new DatabaseConnection();
 
                 if (dbConnection.Users.Find(login, password) != null)
                 {

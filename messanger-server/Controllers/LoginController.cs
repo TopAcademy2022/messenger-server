@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using messanger_server.Services;
 using messanger_server.Services.Interfaces;
 using Microsoft.AspNetCore.Identity;
@@ -24,15 +24,12 @@ namespace messanger_server.Controllers
             const string SUCCESS = "successfully logged in!";
             const string FAILED = "failed to log in...";
 
-            if (ModelState.IsValid)
-            {
-                if (this._userServise.CheckCorrectLogin(login) &&
+            if (this._userServise.CheckCorrectLogin(login) &&
                 this._userServise.CheckCorrectPassword(password) &&
                 this._userServise.LoginAttempt(login, password))
                 {
                     return SUCCESS;
                 }
-            }
 
             return FAILED;
         }

@@ -1,95 +1,59 @@
-﻿using System.Text;
+﻿using messanger_server.Models;
 using Microsoft.EntityFrameworkCore;
-using messanger_server.Models;
 
 // Add documentation
 namespace messanger_server.Services
 {
     public class DatabaseConnection : DbContext
     {
-        private const string _CONFIG_FILE_NAME = "docker-compose.yaml";
+        private const string _DATABASE_NAME = "product";
 
-        private string _textConfigurationFile;
+        private string? _databaseConnectionString;
 
-        private string _databaseConnectionString;
-
-        private DatabaseTypes? _selectedDatabaseType;
-
-        private enum DatabaseTypes
+        private string? GetConnectionString()
         {
-            MSSQL = 0
+            const string _DATABASE_SERVER_NAME_VARIABLE = "DATABASE_SERVER_NAME";
+
+            const string _DATABASE_PORT_NAME_VARIABLE = "DATABASE_PORT";
+
+            const string _DATABASE_USER_NAME_VARIABLE = "USER_NAME";
+
+            const string _DATABASE_PASSWORD_NAME_VARIABLE = "USER_PASSWORD";
+
+            string? databaseServerName = Environment.GetEnvironmentVariable($"{_DATABASE_SERVER_NAME_VARIABLE}");
+
+            string? databasePort = Environment.GetEnvironmentVariable($"{_DATABASE_PORT_NAME_VARIABLE}");
+
+            string? userName = Environment.GetEnvironmentVariable($"{_DATABASE_USER_NAME_VARIABLE}");
+
+            string? userPassword = Environment.GetEnvironmentVariable($"{_DATABASE_PASSWORD_NAME_VARIABLE}");
+
+            if (!String.IsNullOrEmpty(databaseServerName) && !String.IsNullOrEmpty(databasePort) &&
+                !String.IsNullOrEmpty(userName) && !String.IsNullOrEmpty(userPassword))
+            {
+                return $"Server={databaseServerName},{databasePort};Database={_DATABASE_NAME};Integrated security=False;User Id={userName};Password={userPassword};Encrypt=False;Trusted_Connection=True;TrustServerCertificate=True;";
+            }
+
+            return null;
+        }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder dbContextOptionsBuilder)
+        {
+            dbContextOptionsBuilder.UseSqlServer(this._databaseConnectionString);
         }
 
         public DbSet<User> Users { get; set; } = null!;
 
         public DbSet<SecretKey> SecretKeys { get; set; } = null!;
 
-        private string GetTextFromConfigFile()
-        {
-            // Replace file path
-            const string CONFIG_FILE_DIRECTORY = "./";
-            string result = string.Empty;
-            
-            try
-            {
-                FileStream fileStream = File.OpenRead(CONFIG_FILE_DIRECTORY + _CONFIG_FILE_NAME);
-                byte[] bufer = new byte[fileStream.Length];
-                fileStream.Read(bufer);
-
-                result = Encoding.Default.GetString(bufer);
-
-                fileStream.Close();
-            }
-            catch(Exception ex)
-            {
-                // Log ex.Message
-            }
-
-            return result;
-        }
-
-        private DatabaseTypes? GetDatabaseType()
-        {
-            if (this._textConfigurationFile.Contains("sqldata"))
-            {
-                return DatabaseTypes.MSSQL;
-            }
-
-            return null;
-        }
-
-        private string GetConnectionString()
-        {
-            string result = string.Empty;
-
-            if (this._selectedDatabaseType == DatabaseTypes.MSSQL)
-            {
-                // Add parse config file
-                result = @"Server=(localdb)\mssqllocaldb;Database=helloappdb;Trusted_Connection=True;";
-            }
-
-            return result;
-        }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder dbContextOptionsBuilder)
-        {
-            switch (this._selectedDatabaseType)
-            {
-                case DatabaseTypes.MSSQL:
-                    dbContextOptionsBuilder.UseSqlServer(this._databaseConnectionString);
-                    break;
-                default:
-                    // Log error
-                    break;
-            }
-        }
-
         public DatabaseConnection()
         {
-            this._textConfigurationFile = this.GetTextFromConfigFile();
-            this._selectedDatabaseType = this.GetDatabaseType();
             this._databaseConnectionString = this.GetConnectionString();
-            // Add init database tables
+            
+            if (!String.IsNullOrEmpty(this._databaseConnectionString))
+            {
+                this.Database.EnsureCreated();
+            }
         }
     }
 }

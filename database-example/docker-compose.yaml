@@ -1,0 +1,14 @@
+version: '3.0'
+
+services:
+    mssql:
+        container_name: database-mssql
+        image: mcr.microsoft.com/mssql/server:${MSSQL_VERSION}
+        env_file:
+            - .env
+        environment:
+            - ACCEPT_EULA=Y
+            - SA_PASSWORD=${USER_PASSWORD}
+        ports:
+            - ${EXPORT_DATABASE_PORT}:1433
+        restart: always

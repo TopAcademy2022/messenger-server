@@ -31,7 +31,7 @@ namespace messanger_server.Services
             if (!String.IsNullOrEmpty(databaseServerName) && !String.IsNullOrEmpty(databasePort) &&
                 !String.IsNullOrEmpty(userName) && !String.IsNullOrEmpty(userPassword))
             {
-                return $"Server={databaseServerName},{databasePort};Database={_DATABASE_NAME};Integrated security=False;User Id={userName};Password={userPassword};Encrypt=False;Trusted_Connection=True;TrustServerCertificate=True;";
+                return $"Server={databaseServerName},{databasePort};Database={_DATABASE_NAME};Integrated security=False;User Id={userName};Password={userPassword};Encrypt=False;TrustServerCertificate=True;";
             }
 
             return null;
@@ -49,10 +49,18 @@ namespace messanger_server.Services
         public DatabaseConnection()
         {
             this._databaseConnectionString = this.GetConnectionString();
+			Console.WriteLine(this._databaseConnectionString);
             
             if (!String.IsNullOrEmpty(this._databaseConnectionString))
             {
-                this.Database.EnsureCreated();
+                try
+                {
+                    this.Database.EnsureCreated();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
             }
         }
     }

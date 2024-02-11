@@ -12,6 +12,8 @@ services:
             DATABASE_PORT: ${DATABASE_PORT}
             USER_NAME: ${USER_NAME}
             USER_PASSWORD: ${USER_PASSWORD}
+        extra_hosts:
+            - "host.docker.internal:host-gateway"
         ports:
             - ${APPLICATION_PORT}:${CONTAINER_PORT}
         restart: always

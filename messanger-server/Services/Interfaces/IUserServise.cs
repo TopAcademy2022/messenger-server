@@ -1,4 +1,4 @@
-﻿using messanger_server.Models;
+using messanger_server.Models;
 
 // Add documentation
 namespace messanger_server.Services.Interfaces
@@ -12,5 +12,7 @@ namespace messanger_server.Services.Interfaces
         public bool CheckCorrectPassword(string password);
 
         public bool CheckCorrectEmail(string email);
+
+        public bool LoginAttempt(string login, string password);
     }
 }

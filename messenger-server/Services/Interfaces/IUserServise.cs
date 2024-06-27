@@ -1,7 +1,7 @@
-﻿using messanger_server.Models;
+﻿using messenger_server.Models.Entities;
 
 // Add documentation
-namespace messanger_server.Services.Interfaces
+namespace messenger_server.Services.Interfaces
 {
     public interface IUserServise
     {

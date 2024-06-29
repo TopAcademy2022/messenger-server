@@ -1,8 +1,8 @@
-﻿using messanger_server.Models;
-using messanger_server.Services.Interfaces;
+﻿using messenger_server.Models.Entities;
+using messenger_server.Services.Interfaces;
 
 // Add documentation
-namespace messanger_server.Services
+namespace messenger_server.Services
 {
     public class UserService : IUserServise
     {
@@ -21,9 +21,9 @@ namespace messanger_server.Services
                     return true;
                 }
             }
-            catch (Exception ex)
+            catch (Exception exeption)
             {
-                // Replace
+                Console.WriteLine($"Database connection error: {exeption.Message}");
             }
 
             return false;

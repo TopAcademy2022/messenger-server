@@ -2,15 +2,22 @@
 using System.Diagnostics;
 using messenger_server.Models.Entities;
 
-// Add documentation
 namespace messenger_server.Services
 {
+    /*!
+     * @brief Connection to database
+     */
     public class DatabaseConnection : DbContext
     {
         private const string _DATABASE_NAME = "messenger";
 
         private string? _databaseConnectionString;
 
+        /*!
+         * @brief Get connection string from Environment
+         * @details Get connection string for MSSQL from Docker Environment
+         * @return connection string to database of null
+         */
         private string? GetConnectionString()
         {
             const string _DATABASE_SERVER_NAME_VARIABLE = "DATABASE_SERVER_NAME";

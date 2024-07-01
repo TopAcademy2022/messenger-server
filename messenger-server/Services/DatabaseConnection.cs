@@ -54,6 +54,8 @@ namespace messenger_server.Services
 
         public DbSet<User> Users => Set<User>();
 
+        public DbSet<Message> Messages => Set<Message>();
+
         public DatabaseConnection()
         {
             this._databaseConnectionString = this.GetConnectionString();

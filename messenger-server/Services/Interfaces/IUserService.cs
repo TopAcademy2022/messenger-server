@@ -3,7 +3,7 @@
 // Add documentation
 namespace messenger_server.Services.Interfaces
 {
-    public interface IUserServise
+    public interface IUserService
     {
         public bool AddUser(User user);
 
@@ -14,5 +14,7 @@ namespace messenger_server.Services.Interfaces
         public bool CheckCorrectPassword(string password);
 
         public bool CheckCorrectEmail(string email);
+
+        public User? GetUserByLogin(string login);
     }
 }

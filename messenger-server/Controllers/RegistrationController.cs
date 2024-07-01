@@ -12,12 +12,12 @@ namespace messenger_server.Controllers
     {
         private readonly ILogger<RegistrationController> _logger;
 
-        private readonly IUserServise _userServise;
+        private readonly IUserService _userService;
 
         public RegistrationController(ILogger<RegistrationController> logger)
         {
             this._logger = logger;
-            this._userServise = new UserService();
+            this._userService = new UserService();
         }
 
         [HttpPost]
@@ -27,9 +27,9 @@ namespace messenger_server.Controllers
             const string FAILED = "failed registration";
 
             // Check data is correct
-            if (this._userServise.CheckCorrectLogin(login) &&
-                this._userServise.CheckCorrectPassword(password) &&
-                this._userServise.CheckCorrectEmail(email))
+            if (this._userService.CheckCorrectLogin(login) &&
+                this._userService.CheckCorrectPassword(password) &&
+                this._userService.CheckCorrectEmail(email))
             {
                 User newUser = new User()
                 {
@@ -38,7 +38,7 @@ namespace messenger_server.Controllers
                     Email = email
                 };
 
-                if (this._userServise.AddUser(newUser))
+                if (this._userService.AddUser(newUser))
                 {
                     return SUCCESS;
                 }

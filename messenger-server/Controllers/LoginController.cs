@@ -11,20 +11,20 @@ namespace messenger_server.Controllers
     {
         private readonly ILogger<RegistrationController> _logger;
 
-        private readonly IUserServise _userServise;
+        private readonly IUserService _userService;
 
         public LoginController(ILogger<RegistrationController> logger)
         {
             this._logger = logger;
-            this._userServise = new UserService();
+            this._userService = new UserService();
         }
 
         [HttpGet]
         public bool GetUser(string login, string password)
         {
             // Check data is correct
-            if (this._userServise.CheckCorrectLogin(login) &&
-                this._userServise.CheckCorrectPassword(password))
+            if (this._userService.CheckCorrectLogin(login) &&
+                this._userService.CheckCorrectPassword(password))
             {
                 User newUser = new User()
                 {
@@ -32,7 +32,7 @@ namespace messenger_server.Controllers
                     Password = password
                 };
 
-                if (this._userServise.CheckExistUser(newUser))
+                if (this._userService.CheckExistUser(newUser))
                 {
                     return true;
                 }

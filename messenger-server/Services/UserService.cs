@@ -29,6 +29,29 @@ namespace messenger_server.Services
             return false;
         }
 
+        public bool CheckExistUser(User user)
+        {
+            try
+            {
+                DatabaseConnection dbConnection = new DatabaseConnection();
+
+                List<User>? gettingUsers = dbConnection.Users
+                    .Where(u => u.Login == user.Login && u.Password == user.Password)
+                    .ToList();
+
+                if (gettingUsers.Count() > 0)
+                {
+                    return true;
+                }
+            }
+            catch (Exception exeption)
+            {
+                Console.WriteLine($"Database connection error: {exeption.Message}");
+            }
+
+            return false;
+        }
+
         // Replace
         public bool CheckCorrectLogin(string login)
         {

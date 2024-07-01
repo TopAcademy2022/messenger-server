@@ -7,6 +7,8 @@ namespace messenger_server.Services.Interfaces
     {
         public bool AddUser(User user);
 
+        public bool CheckExistUser(User user);
+
         public bool CheckCorrectLogin(string login);
 
         public bool CheckCorrectPassword(string password);

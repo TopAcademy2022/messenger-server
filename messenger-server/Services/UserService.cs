@@ -4,7 +4,7 @@ using messenger_server.Services.Interfaces;
 // Add documentation
 namespace messenger_server.Services
 {
-    public class UserService : IUserServise
+    public class UserService : IUserService
     {
         public bool AddUser(User user)
         {
@@ -68,6 +68,28 @@ namespace messenger_server.Services
         public bool CheckCorrectEmail(string email)
         {
             return true;
+        }
+
+        public User? GetUserByLogin(string login)
+        {
+            try
+            {
+                DatabaseConnection dbConnection = new DatabaseConnection();
+
+                List<User>? gettingUsers = dbConnection.Users.Where(u => u.Login == login)
+                    .ToList();
+
+                if (gettingUsers.Count > 0)
+                {
+                    return gettingUsers.First();
+                }
+            }
+            catch (Exception exeption)
+            {
+                Console.WriteLine($"Database connection error: {exeption.Message}");
+            }
+
+            return null;
         }
     }
 }

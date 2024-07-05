@@ -1,15 +1,23 @@
-﻿using messanger_server.Models;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
+using System.Diagnostics;
+using messenger_server.Models.Entities;
 
-// Add documentation
-namespace messanger_server.Services
+namespace messenger_server.Services
 {
+    /*!
+     * @brief Connection to database
+     */
     public class DatabaseConnection : DbContext
     {
-        private const string _DATABASE_NAME = "product";
+        private const string _DATABASE_NAME = "messenger";
 
         private string? _databaseConnectionString;
 
+        /*!
+         * @brief Get connection string from Environment
+         * @details Get connection string for MSSQL from Docker Environment
+         * @return connection string to database of null
+         */
         private string? GetConnectionString()
         {
             const string _DATABASE_SERVER_NAME_VARIABLE = "DATABASE_SERVER_NAME";
@@ -31,7 +39,9 @@ namespace messanger_server.Services
             if (!String.IsNullOrEmpty(databaseServerName) && !String.IsNullOrEmpty(databasePort) &&
                 !String.IsNullOrEmpty(userName) && !String.IsNullOrEmpty(userPassword))
             {
-                return $"Server={databaseServerName},{databasePort};Database={_DATABASE_NAME};Integrated security=False;User Id={userName};Password={userPassword};Encrypt=False;TrustServerCertificate=True;";
+                return $"Server={databaseServerName},{databasePort};Database={_DATABASE_NAME};" +
+                    $"Integrated security=False;User Id={userName};Password={userPassword};" +
+                    $"Encrypt=False;TrustServerCertificate=True;";
             }
 
             return null;
@@ -42,24 +52,28 @@ namespace messanger_server.Services
             dbContextOptionsBuilder.UseSqlServer(this._databaseConnectionString);
         }
 
-        public DbSet<User> Users { get; set; } = null!;
+        public DbSet<User> Users => Set<User>();
 
-        public DbSet<SecretKey> SecretKeys { get; set; } = null!;
+        public DbSet<Message> Messages => Set<Message>();
 
         public DatabaseConnection()
         {
             this._databaseConnectionString = this.GetConnectionString();
-			Console.WriteLine(this._databaseConnectionString);
-            
+
+            if (Debugger.IsAttached)
+            {
+                Console.WriteLine(this._databaseConnectionString);
+            }
+
             if (!String.IsNullOrEmpty(this._databaseConnectionString))
             {
                 try
                 {
                     this.Database.EnsureCreated();
                 }
-                catch (Exception ex)
+                catch (Exception exeption)
                 {
-                    Console.WriteLine(ex.Message);
+                    Console.WriteLine($"Database creating error: {exeption.Message}");
                 }
             }
         }

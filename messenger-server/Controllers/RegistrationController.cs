@@ -1,9 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using messanger_server.Services;
-using messanger_server.Services.Interfaces;
+using messenger_server.Services;
+using messenger_server.Services.Interfaces;
+using messenger_server.Models.Entities;
 
 // Add documentation
-namespace messanger_server.Controllers
+namespace messenger_server.Controllers
 {
     [ApiController]
     [Route("registration")]
@@ -11,12 +12,12 @@ namespace messanger_server.Controllers
     {
         private readonly ILogger<RegistrationController> _logger;
 
-        private IUserServise _userServise;
+        private readonly IUserService _userService;
 
         public RegistrationController(ILogger<RegistrationController> logger)
         {
             this._logger = logger;
-            this._userServise = new UserService();
+            this._userService = new UserService();
         }
 
         [HttpPost]
@@ -26,11 +27,18 @@ namespace messanger_server.Controllers
             const string FAILED = "failed registration";
 
             // Check data is correct
-            if (this._userServise.CheckCorrectLogin(login) &&
-                this._userServise.CheckCorrectPassword(password) &&
-                this._userServise.CheckCorrectEmail(email))
+            if (this._userService.CheckCorrectLogin(login) &&
+                this._userService.CheckCorrectPassword(password) &&
+                this._userService.CheckCorrectEmail(email))
             {
-                if (this._userServise.AddUser(new Models.User() { Login = login, Password = password, Email = email }))
+                User newUser = new User()
+                {
+                    Login = login,
+                    Password = password,
+                    Email = email
+                };
+
+                if (this._userService.AddUser(newUser))
                 {
                     return SUCCESS;
                 }

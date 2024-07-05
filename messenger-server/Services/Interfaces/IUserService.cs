@@ -1,16 +1,20 @@
-﻿using messanger_server.Models;
+﻿using messenger_server.Models.Entities;
 
 // Add documentation
-namespace messanger_server.Services.Interfaces
+namespace messenger_server.Services.Interfaces
 {
-    public interface IUserServise
+    public interface IUserService
     {
         public bool AddUser(User user);
+
+        public bool CheckExistUser(User user);
 
         public bool CheckCorrectLogin(string login);
 
         public bool CheckCorrectPassword(string password);
 
         public bool CheckCorrectEmail(string email);
+
+        public User? GetUserByLogin(string login);
     }
 }

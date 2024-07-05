@@ -1,5 +1,3 @@
-version: '3.0'
-
 services:
     main:
         container_name: messanger-server
@@ -12,8 +10,25 @@ services:
             DATABASE_PORT: ${DATABASE_PORT}
             USER_NAME: ${USER_NAME}
             USER_PASSWORD: ${USER_PASSWORD}
-        extra_hosts:
-            - "host.docker.internal:host-gateway"
         ports:
             - ${APPLICATION_PORT}:${CONTAINER_PORT}
+        depends_on:
+            - mssql
         restart: always
+    mssql:
+        container_name: database-mssql
+        image: mcr.microsoft.com/mssql/server:${MSSQL_VERSION}
+        env_file:
+            - .env
+        environment:
+            - ACCEPT_EULA=Y
+            - SA_PASSWORD=${USER_PASSWORD}
+        ports:
+            - ${EXPORT_DATABASE_PORT}:1433
+        restart: always
+        volumes:
+        - mssql-data:/var/opt/mssql
+
+volumes:
+    mssql-data:
+        driver: local

@@ -1,4 +1,4 @@
-﻿using System.Text.RegularExpressions;
+using System.Text.RegularExpressions;
 using messenger_server.Models.Entities;
 using messenger_server.Services.Interfaces;
 

@@ -5,112 +5,147 @@ using messenger_server.Services.Interfaces;
 // Add documentation
 namespace messenger_server.Services
 {
-    public class UserService : IUserService
-    {
-        public bool AddUser(User user)
-        {
-            try
-            {
-                DatabaseConnection dbConnection = new DatabaseConnection();
+	public class UserService : IUserService
+	{
+		private readonly ILogger<UserService> _logger;
 
-                // Replace
-                if (!dbConnection.Users.Contains(user))
-                {
-                    dbConnection.Users.Add(user);
-                    dbConnection.SaveChanges();
+		public UserService(ILogger<UserService> logger)
+		{
+			this._logger = logger;
+		}
 
-                    return true;
-                }
-            }
-            catch (Exception exeption)
-            {
-                Console.WriteLine($"Database connection error: {exeption.Message}");
-            }
+		public bool AddUser(User user)
+		{
+			try
+			{
+				DatabaseConnection dbConnection = new DatabaseConnection();
 
-            return false;
-        }
+				if (this.CheckUniqUser(user))
+				{
+					dbConnection.Users.Add(user);
+					dbConnection.SaveChanges();
 
-        public bool CheckExistUser(User user)
-        {
-            try
-            {
-                DatabaseConnection dbConnection = new DatabaseConnection();
+					return true;
+				}
+			}
+			catch (Exception exception)
+			{
+				this._logger.LogError(exception.Message);
+			}
 
-                List<User>? gettingUsers = dbConnection.Users
-                    .Where(u => u.Login == user.Login && u.Password == user.Password)
-                    .ToList();
+			return false;
+		}
 
-                if (gettingUsers.Count() > 0)
-                {
-                    return true;
-                }
-            }
-            catch (Exception exeption)
-            {
-                Console.WriteLine($"Database connection error: {exeption.Message}");
-            }
+		/*!
+		* @brief That checks the user's name for uniqueness
+		* @param[in] user A new user who is being checked for uniqueness
+		* @return True - the user is not found by username. False - The user is not unique.
+		*/
+		private bool CheckUniqUser(User user)
+		{
+			try
+			{
+				DatabaseConnection dbConnection = new DatabaseConnection();
 
-            return false;
-        }
+				/*!
+				* @if
+				* Сhecking the user for uniqueness by login
+				* @endif
+				*/
+				if (!dbConnection.Users.Any(u => u.Login == user.Login))
+				{
+					return true;
+				}
+			}
+			catch (Exception exception)
+			{
+				this._logger.LogError(exception.Message);
+			}
 
-        // Replace
-        public bool CheckCorrectLogin(string login)
-        {
-            // Проверка длины
-            if (string.IsNullOrEmpty(login) || login.Length > 20) /*Если логин пустой и его длина больше 20 то выводит false*/
-            {
-                return false;
-            }
+			return false;
+		}
 
-            //  Проверка на SQL-инъекции с помощью спец символов
-            string sqlInjectionPattern = @"[\?&$'|#№/\\*;]+";
-            if (Regex.IsMatch(login, sqlInjectionPattern))
-            {
-                return false;
-            }
+		public bool CheckExistUser(User user)
+		{
+			try
+			{
+				DatabaseConnection dbConnection = new DatabaseConnection();
 
-            // Проверка на XSS-инъекции с помощью спец символов
-            string xssPattern = @"[<|>]+";
-            if (Regex.IsMatch(login, xssPattern))
-            {
-                return false;
-            }
+				List<User>? gettingUsers = dbConnection.Users
+					.Where(u => u.Login == user.Login && u.Password == user.Password)
+					.ToList();
 
-            return true;
-        }
+				if (gettingUsers.Count() > 0)
+				{
+					return true;
+				}
+			}
+			catch (Exception exception)
+			{
+				this._logger.LogError(exception.Message);
+			}
 
-        // Replace
-        public bool CheckCorrectPassword(string password)
-        {
-            return true;
-        }
+			return false;
+		}
 
-        // Replace
-        public bool CheckCorrectEmail(string email)
-        {
-            return true;
-        }
+		// Replace
+		public bool CheckCorrectLogin(string login)
+		{
+			// Проверка длины
+			if (string.IsNullOrEmpty(login) || login.Length > 20) /*Если логин пустой и его длина больше 20 то выводит false*/
+			{
+				return false;
+			}
 
-        public User? GetUserByLogin(string login)
-        {
-            try
-            {
-                DatabaseConnection dbConnection = new DatabaseConnection();
+			//  Проверка на SQL-инъекции с помощью спец символов
+			string sqlInjectionPattern = @"[\?&$'|#№/\\*;]+";
+			if (Regex.IsMatch(login, sqlInjectionPattern))
+			{
+				return false;
+			}
 
-                List<User>? gettingUsers = dbConnection.Users.Where(u => u.Login == login)
-                    .ToList();
+			// Проверка на XSS-инъекции с помощью спец символов
+			string xssPattern = @"[<|>]+";
+			if (Regex.IsMatch(login, xssPattern))
+			{
+				return false;
+			}
 
-                if (gettingUsers.Count > 0)
-                {
-                    return gettingUsers.First();
-                }
-            }
-            catch (Exception exeption)
-            {
-                Console.WriteLine($"Database connection error: {exeption.Message}");
-            }
+			return true;
+		}
 
-            return null;
-        }
-    }
+		// Replace
+		public bool CheckCorrectPassword(string password)
+		{
+			return true;
+		}
+
+		// Replace
+		public bool CheckCorrectEmail(string email)
+		{
+			return true;
+		}
+
+		public User? GetUserByLogin(string login)
+		{
+			try
+			{
+				DatabaseConnection dbConnection = new DatabaseConnection();
+
+				List<User>? gettingUsers = dbConnection.Users.Where(u => u.Login == login)
+					.ToList();
+
+				if (gettingUsers.Count > 0)
+				{
+					return gettingUsers.First();
+				}
+			}
+			catch (Exception exception)
+			{
+				this._logger.LogError(exception.Message);
+			}
+
+			return null;
+		}
+	}
 }

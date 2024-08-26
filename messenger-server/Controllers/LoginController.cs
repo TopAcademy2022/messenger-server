@@ -13,10 +13,10 @@ namespace messenger_server.Controllers
 
         private readonly IUserService _userService;
 
-        public LoginController(ILogger<RegistrationController> logger)
+        public LoginController(ILogger<RegistrationController> logger, ILogger<UserService> userServiceLogger)
         {
             this._logger = logger;
-            this._userService = new UserService();
+            this._userService = new UserService(userServiceLogger);
         }
 
         [HttpGet]

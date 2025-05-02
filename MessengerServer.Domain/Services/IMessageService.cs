@@ -1,6 +1,7 @@
-﻿using messenger_server.Models.Entities;
+﻿using System.Collections.Generic;
+using MessengerServer.Domain.Models.Domain;
 
-namespace messenger_server.Services.Interfaces
+namespace MessengerServer.Domain.Services
 {
     public interface IMessageService
     {

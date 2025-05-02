@@ -1,10 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System.Text.Json;
-using messenger_server.Models.Entities;
-using messenger_server.Services.Interfaces;
-using messenger_server.Services;
+using MessengerServer.Infrastructure.Repositories;
+using MessengerServer.Infrastructure.Models.Entities;
 
-namespace messenger_server.Controllers
+namespace MessengerServer.Controllers
 {
     [ApiController]
     [Route("messenger")]
@@ -12,15 +10,15 @@ namespace messenger_server.Controllers
     {
         private readonly ILogger<RegistrationController> _logger;
 
-        private readonly IMessageService _messageService;
+        private readonly MessageRepository _messageService;
 
-        private readonly IUserService _userService;
+        private readonly UserRepository _userService;
 
-        public MessageController(ILogger<RegistrationController> logger, ILogger<UserService> userServiceLogger)
+        public MessageController(ILogger<RegistrationController> logger, ILogger<UserRepository> userServiceLogger)
         {
             this._logger = logger;
-            this._messageService = new MessageService();
-            this._userService = new UserService(userServiceLogger);
+            this._messageService = new MessageRepository();
+            this._userService = new UserRepository(userServiceLogger);
         }
 
         [HttpPost]
@@ -34,6 +32,7 @@ namespace messenger_server.Controllers
                 Text = messageText
             };
 
+            // TODO: Rewrite
             if (message.SenderId != null && message.RecipientId != null)
             {
                 if (this._messageService.Send(message))
@@ -46,11 +45,11 @@ namespace messenger_server.Controllers
         }
 
         [HttpGet]
-        public string GetMessage(string loginRecipient)
+        public IEnumerable<Message> GetMessage(string loginRecipient)
         {
             List<Message> messages = this._messageService.Get(this._userService.GetUserByLogin(loginRecipient));
             
-            return JsonSerializer.Serialize(messages);
+            return messages;
         }
     }
 }

@@ -1,10 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using messenger_server.Services;
-using messenger_server.Services.Interfaces;
-using messenger_server.Models.Entities;
+using MessengerServer.Infrastructure.Repositories;
+using MessengerServer.Infrastructure.Models.Entities;
 
 // Add documentation
-namespace messenger_server.Controllers
+namespace MessengerServer.Controllers
 {
     [ApiController]
     [Route("registration")]
@@ -12,12 +11,12 @@ namespace messenger_server.Controllers
     {
         private readonly ILogger<RegistrationController> _logger;
 
-        private readonly IUserService _userService;
+        private readonly UserRepository _userService;
 
-        public RegistrationController(ILogger<RegistrationController> logger, ILogger<UserService> userServiceLogger)
+        public RegistrationController(ILogger<RegistrationController> logger, ILogger<UserRepository> userServiceLogger)
         {
             this._logger = logger;
-            this._userService = new UserService(userServiceLogger);
+            this._userService = new UserRepository(userServiceLogger);
         }
 
         [HttpPost]

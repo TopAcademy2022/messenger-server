@@ -1,7 +1,7 @@
-﻿using messenger_server.Models.Entities;
+﻿using MessengerServer.Domain.Models.Domain;
 
-// Add documentation
-namespace messenger_server.Services.Interfaces
+// TODO: Add documentation
+namespace MessengerServer.Domain.Services
 {
     public interface IUserService
     {

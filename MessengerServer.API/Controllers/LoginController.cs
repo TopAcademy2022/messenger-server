@@ -1,9 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using messenger_server.Services.Interfaces;
-using messenger_server.Models.Entities;
-using messenger_server.Services;
+using MessengerServer.Infrastructure.Repositories;
+using MessengerServer.Infrastructure.Models.Entities;
 
-namespace messenger_server.Controllers
+namespace MessengerServer.Controllers
 {
     [ApiController]
     [Route("login")]
@@ -11,12 +10,12 @@ namespace messenger_server.Controllers
     {
         private readonly ILogger<RegistrationController> _logger;
 
-        private readonly IUserService _userService;
+        private readonly UserRepository _userService;
 
-        public LoginController(ILogger<RegistrationController> logger, ILogger<UserService> userServiceLogger)
+        public LoginController(ILogger<RegistrationController> logger, ILogger<UserRepository> userServiceLogger)
         {
             this._logger = logger;
-            this._userService = new UserService(userServiceLogger);
+            this._userService = new UserRepository(userServiceLogger);
         }
 
         [HttpGet]

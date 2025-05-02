@@ -1,15 +1,18 @@
-﻿using messenger_server.Models.Entities;
-using messenger_server.Services.Interfaces;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using MessengerServer.Infrastructure.Models.Entities;
+using MessengerServer.Infrastructure.Services;
 
-namespace messenger_server.Services
+namespace MessengerServer.Infrastructure.Repositories
 {
-    public class MessageService : IMessageService
+    public class MessageRepository// : IMessageService
     {
         public bool Send(Message message)
         {
             try
             {
-                DatabaseConnection dbConnection = new DatabaseConnection();
+				DbConnection dbConnection = new DbConnection();
 
                 dbConnection.Messages.Add(message);
                 dbConnection.SaveChanges();
@@ -30,7 +33,7 @@ namespace messenger_server.Services
 
             try
             {
-                DatabaseConnection dbConnection = new DatabaseConnection();
+				DbConnection dbConnection = new DbConnection();
 
                 allMessangesForUser = dbConnection.Messages
                     .Where(m => m.RecipientId == recipient.Id)

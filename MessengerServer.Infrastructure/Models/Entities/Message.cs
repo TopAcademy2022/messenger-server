@@ -1,4 +1,6 @@
-﻿namespace messenger_server.Models.Entities
+﻿using System;
+
+namespace MessengerServer.Infrastructure.Models.Entities
 {
     public class Message
     {

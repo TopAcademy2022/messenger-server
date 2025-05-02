@@ -1,5 +1,5 @@
-﻿// Add documentation
-namespace messenger_server.Models.Entities
+﻿// TODO: Add documentation
+namespace MessengerServer.Infrastructure.Models.Entities
 {
     public class User
     {

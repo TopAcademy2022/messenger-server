@@ -7,17 +7,17 @@ EXPOSE 443
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["MessengerServer/MessengerServer.csproj", "MessengerServer/"]
-RUN dotnet restore "./MessengerServer/MessengerServer.csproj"
+COPY ["MessengerServer.API/MessengerServer.API.csproj", "MessengerServer/"]
+RUN dotnet restore "./MessengerServer/MessengerServer.API.csproj"
 COPY . .
 WORKDIR "/src/MessengerServer"
-RUN dotnet build "./MessengerServer.csproj" -c $BUILD_CONFIGURATION -o /app/build
+RUN dotnet build "./MessengerServer.API.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "./MessengerServer.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "./MessengerServer.API.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "MessengerServer.dll"]
+ENTRYPOINT ["dotnet", "MessengerServer.API.dll"]

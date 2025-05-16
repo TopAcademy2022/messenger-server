@@ -398,4 +398,7 @@ FodyWeavers.xsd
 *.sln.iml
 
 # Doxygen
-Docs/html/*
+docs/html/*
+
+# Debug data
+App_Data

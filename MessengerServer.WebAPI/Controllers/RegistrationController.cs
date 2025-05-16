@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MessengerServer.Infrastructure.Repositories;
 using MessengerServer.Infrastructure.Models.Entities;
+using MessengerServer.Infrastructure.Persistence;
 
 // Add documentation
 namespace MessengerServer.Controllers
@@ -13,10 +14,10 @@ namespace MessengerServer.Controllers
 
         private readonly UserRepository _userService;
 
-        public RegistrationController(ILogger<RegistrationController> logger, ILogger<UserRepository> userServiceLogger)
+        public RegistrationController(ILogger<RegistrationController> logger, ILogger<UserRepository> userServiceLogger, AppDbContextBase dbConnection)
         {
             this._logger = logger;
-            this._userService = new UserRepository(userServiceLogger);
+            this._userService = new UserRepository(userServiceLogger, dbConnection);
         }
 
         [HttpPost]

@@ -2,18 +2,23 @@
 using System.Collections.Generic;
 using System.Linq;
 using MessengerServer.Infrastructure.Models.Entities;
-using MessengerServer.Infrastructure.Services;
+using MessengerServer.Infrastructure.Persistence;
 
 namespace MessengerServer.Infrastructure.Repositories
 {
     public class MessageRepository// : IMessageService
     {
-        public bool Send(Message message)
+        private AppDbContextBase dbConnection;
+
+        public MessageRepository(AppDbContextBase dbConnection)
+        {
+            this.dbConnection = dbConnection;
+        }
+
+		public bool Send(Message message)
         {
             try
             {
-				DbConnection dbConnection = new DbConnection();
-
                 dbConnection.Messages.Add(message);
                 dbConnection.SaveChanges();
 
@@ -33,8 +38,6 @@ namespace MessengerServer.Infrastructure.Repositories
 
             try
             {
-				DbConnection dbConnection = new DbConnection();
-
                 allMessangesForUser = dbConnection.Messages
                     .Where(m => m.RecipientId == recipient.Id)
                     .ToList();

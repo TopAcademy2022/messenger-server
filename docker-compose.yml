@@ -1,0 +1,35 @@
+services:
+  main:
+    container_name: messenger-server
+    build:
+      dockerfile: docker/Dockerfile
+    env_file:
+      - .env
+    ports:
+      - ${APPLICATION_PORT}:${CONTAINER_PORT}
+    depends_on:
+      - mssql
+    restart: unless-stopped
+
+  mssql:
+    container_name: database-mssql
+    image: mcr.microsoft.com/mssql/server:${MSSQL_VERSION}
+    env_file:
+      - .env
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=${DB_PASS}
+    ports:
+      - ${EXPORT_DATABASE_PORT}:1433
+    volumes:
+      - mssql-data:/var/opt/mssql
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD-SHELL", "/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P $$DB_PASS -Q 'SELECT 1'" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  mssql-data:
+    driver: local

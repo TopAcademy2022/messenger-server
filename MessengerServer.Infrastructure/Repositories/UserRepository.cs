@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using Microsoft.Extensions.Logging;
 using MessengerServer.Infrastructure.Models.Entities;
-using MessengerServer.Infrastructure.Services;
+using MessengerServer.Infrastructure.Persistence;
 
 // TODO: Add documentation
 namespace MessengerServer.Infrastructure.Repositories
@@ -13,17 +13,18 @@ namespace MessengerServer.Infrastructure.Repositories
     {
         private readonly ILogger<UserRepository> _logger;
 
-        public UserRepository(ILogger<UserRepository> logger)
+		private AppDbContextBase dbConnection;
+
+		public UserRepository(ILogger<UserRepository> logger, AppDbContextBase dbConnection)
         {
             _logger = logger;
-        }
+			this.dbConnection = dbConnection;
+		}
 
         public bool AddUser(User user)
         {
             try
             {
-				DbConnection dbConnection = new DbConnection();
-
                 if (CheckUniqUser(user))
                 {
                     dbConnection.Users.Add(user);
@@ -34,7 +35,8 @@ namespace MessengerServer.Infrastructure.Repositories
             }
             catch (Exception exception)
             {
-                _logger.LogError(exception.Message);
+                this._logger.LogError(exception.Message);
+                throw;
             }
 
             return false;
@@ -49,8 +51,6 @@ namespace MessengerServer.Infrastructure.Repositories
         {
             try
             {
-				DbConnection dbConnection = new DbConnection();
-
                 /*!
 				* @if
 				* Сhecking the user for uniqueness by login
@@ -63,8 +63,9 @@ namespace MessengerServer.Infrastructure.Repositories
             }
             catch (Exception exception)
             {
-                _logger.LogError(exception.Message);
-            }
+                this._logger.LogError(exception.Message);
+				throw;
+			}
 
             return false;
         }
@@ -73,8 +74,6 @@ namespace MessengerServer.Infrastructure.Repositories
         {
             try
             {
-				DbConnection dbConnection = new DbConnection();
-
                 List<User>? gettingUsers = dbConnection.Users
                     .Where(u => u.Login == user.Login && u.Password == user.Password)
                     .ToList();
@@ -86,8 +85,9 @@ namespace MessengerServer.Infrastructure.Repositories
             }
             catch (Exception exception)
             {
-                _logger.LogError(exception.Message);
-            }
+                this._logger.LogError(exception.Message);
+				throw;
+			}
 
             return false;
         }
@@ -134,8 +134,6 @@ namespace MessengerServer.Infrastructure.Repositories
         {
             try
             {
-				DbConnection dbConnection = new DbConnection();
-
                 List<User>? gettingUsers = dbConnection.Users.Where(u => u.Login == login)
                     .ToList();
 
@@ -146,8 +144,9 @@ namespace MessengerServer.Infrastructure.Repositories
             }
             catch (Exception exception)
             {
-                _logger.LogError(exception.Message);
-            }
+                this._logger.LogError(exception.Message);
+				throw;
+			}
 
             return null;
         }

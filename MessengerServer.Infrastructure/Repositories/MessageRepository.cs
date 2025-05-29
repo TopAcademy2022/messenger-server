@@ -6,11 +6,11 @@ using MessengerServer.Infrastructure.Persistence;
 
 namespace MessengerServer.Infrastructure.Repositories
 {
-    public class MessageRepository// : IMessageService
+    public class MessageRepository : BaseRepository<Message>
     {
         private AppDbContextBase dbConnection;
 
-        public MessageRepository(AppDbContextBase dbConnection)
+        public MessageRepository(AppDbContextBase dbConnection) : base(dbConnection)
         {
             this.dbConnection = dbConnection;
         }

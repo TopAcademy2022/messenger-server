@@ -5,19 +5,20 @@ using System.Text.RegularExpressions;
 using Microsoft.Extensions.Logging;
 using MessengerServer.Infrastructure.Models.Entities;
 using MessengerServer.Infrastructure.Persistence;
+using MessengerServer.Domain.Repositories;
 
 // TODO: Add documentation
 namespace MessengerServer.Infrastructure.Repositories
 {
-    public class UserRepository// : IUserService
+    public class UserRepository
     {
         private readonly ILogger<UserRepository> _logger;
 
 		private AppDbContextBase dbConnection;
 
-		public UserRepository(ILogger<UserRepository> logger, AppDbContextBase dbConnection)
+		public UserRepository(AppDbContextBase dbConnection)
         {
-            _logger = logger;
+            //_logger = logger;
 			this.dbConnection = dbConnection;
 		}
 

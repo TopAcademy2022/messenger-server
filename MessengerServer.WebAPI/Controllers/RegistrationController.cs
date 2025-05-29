@@ -17,7 +17,7 @@ namespace MessengerServer.Controllers
         public RegistrationController(ILogger<RegistrationController> logger, ILogger<UserRepository> userServiceLogger, AppDbContextBase dbConnection)
         {
             this._logger = logger;
-            this._userService = new UserRepository(userServiceLogger, dbConnection);
+            this._userService = new UserRepository(dbConnection);
         }
 
         [HttpPost]

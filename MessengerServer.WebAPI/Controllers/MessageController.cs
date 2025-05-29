@@ -2,6 +2,7 @@
 using MessengerServer.Infrastructure.Repositories;
 using MessengerServer.Infrastructure.Models.Entities;
 using MessengerServer.Infrastructure.Persistence;
+using MessengerServer.Domain.Repositories;
 
 namespace MessengerServer.Controllers
 {
@@ -11,15 +12,15 @@ namespace MessengerServer.Controllers
     {
         private readonly ILogger<RegistrationController> _logger;
 
-        private readonly MessageRepository _messageService;
+		private readonly IRepository<Message> _messageRepository;
 
-        private readonly UserRepository _userService;
+        private readonly UserRepository _userRepository;
 
-        public MessageController(ILogger<RegistrationController> logger, ILogger<UserRepository> userServiceLogger, AppDbContextBase dbConnection)
+        public MessageController(AppDbContextBase dbConnection)
         {
-            this._logger = logger;
-            this._messageService = new MessageRepository(dbConnection);
-            this._userService = new UserRepository(userServiceLogger, dbConnection);
+            //this._logger = logger;
+            this._messageRepository = new BaseRepository<Message>(dbConnection);
+            this._userRepository = new UserRepository(dbConnection);
         }
 
         [HttpPost]
@@ -27,8 +28,8 @@ namespace MessengerServer.Controllers
         {
             Message message = new Message()
             {
-                SenderId = this._userService.GetUserByLogin(loginSender).Id,
-                RecipientId = this._userService.GetUserByLogin(loginRecipient).Id,
+                SenderId = this._userRepository.GetUserByLogin(loginSender).Id,
+                RecipientId = this._userRepository.GetUserByLogin(loginRecipient).Id,
                 DepartureDate = new DateTime(),
                 Text = messageText
             };
@@ -36,7 +37,7 @@ namespace MessengerServer.Controllers
             // TODO: Rewrite
             if (message.SenderId != null && message.RecipientId != null)
             {
-                if (this._messageService.Send(message))
+                if (this._messageRepository.Add(message))
                 {
                     return true;
                 }
@@ -48,7 +49,8 @@ namespace MessengerServer.Controllers
         [HttpGet]
         public IEnumerable<Message> GetMessage(string loginRecipient)
         {
-            List<Message> messages = this._messageService.Get(this._userService.GetUserByLogin(loginRecipient));
+            User recipient = this._userRepository.GetUserByLogin(loginRecipient);
+			List<Message> messages = this._messageRepository.GetAll().Where(m => m.RecipientId == recipient.Id).ToList();
             
             return messages;
         }

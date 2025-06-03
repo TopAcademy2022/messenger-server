@@ -8,7 +8,9 @@ using MessengerServer.Infrastructure.Persistence;
 
 namespace MessengerServer.Infrastructure.Repositories
 {
-	public class BaseRepository<T> : IRepository<T> where T : class
+	public class BaseRepository<TEntity, TDomain> : IRepository<TDomain>
+		where TEntity : class
+		where TDomain : class
 	{
 		private AppDbContextBase _appDbContextBase;
 
@@ -17,11 +19,11 @@ namespace MessengerServer.Infrastructure.Repositories
 			this._appDbContextBase = appDbContextBase;
 		}
 
-		public bool Add(T entity)
+		public bool Add(TDomain entity)
 		{
 			try
 			{
-				this._appDbContextBase.Set<T>().Add(entity);
+				this._appDbContextBase.Set<TEntity>().Add(entity);
 				return true;
 			}
 			catch (Exception ex)
@@ -32,11 +34,11 @@ namespace MessengerServer.Infrastructure.Repositories
 			return false;
 		}
 
-		public T GetById(int id)
+		public TDomain GetById(int id)
 		{
 			try
 			{
-				T? entity = this._appDbContextBase.Set<T>().Find(id);
+				TEntity? entity = this._appDbContextBase.Set<TEntity>().Find(id);
 
 				if (entity != null)
 				{
@@ -53,11 +55,11 @@ namespace MessengerServer.Infrastructure.Repositories
 			#pragma warning restore CS8603 // Возможно, возврат ссылки, допускающей значение NULL.
 		}
 
-		public IEnumerable<T> GetAll()
+		public IEnumerable<TDomain> GetAll()
 		{
 			try
 			{
-				return this._appDbContextBase.Set<T>();
+				return this._appDbContextBase.Set<TEntity>();
 			}
 			catch (Exception ex)
 			{
@@ -67,11 +69,11 @@ namespace MessengerServer.Infrastructure.Repositories
 			return Enumerable.Empty<T>();
 		}
 
-		public bool UpdateById(T entity)
+		public bool UpdateById(TDomain entity)
 		{
 			try
 			{
-				this._appDbContextBase.Set<T>().Update(entity);
+				this._appDbContextBase.Set<TEntity>().Update(entity);
 				return true;
 			}
 			catch (Exception ex)
@@ -86,11 +88,11 @@ namespace MessengerServer.Infrastructure.Repositories
 		{
 			try
 			{
-				T? entity = this._appDbContextBase.Set<T>().Find(id);
+				TEntity? entity = this._appDbContextBase.Set<TEntity>().Find(id);
 
 				if (entity != null)
 				{
-					this._appDbContextBase.Set<T>().Remove(entity);
+					this._appDbContextBase.Set<TEntity>().Remove(entity);
 					return true;
 				}
 			}
